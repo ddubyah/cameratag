@@ -17,6 +17,7 @@ module.exports = (grunt) ->
 	# configurable paths
 	yeomanConfig =
 		app: "app"
+		tmp: ".tmp"
 		dist: "dist"
 
 	grunt.initConfig
@@ -153,9 +154,9 @@ module.exports = (grunt) ->
 				options:
 					
 					# `name` and `out` is set by grunt-usemin
-					baseUrl: yeomanConfig.app + "/scripts"
+					baseUrl: yeomanConfig.tmp + "/scripts"
 					optimize: "none"
-					
+
 					# TODO: Figure out how to make sourcemaps work with grunt-usemin
 					# https://github.com/yeoman/grunt-usemin/issues/30
 					#generateSourceMaps: true,
@@ -249,6 +250,13 @@ module.exports = (grunt) ->
 					cwd: "<%= yeoman.app %>"
 					dest: "<%= yeoman.dist %>"
 					src: ["*.{ico,png,txt}", ".htaccess", "images/{,*/}*.{webp,gif}", "styles/fonts/{,*/}*.*", "bower_components/sass-bootstrap/fonts/*.*"]
+				,
+					expand: true
+					dot: true
+					cwd: "<%= yeoman.app %>"
+					dest: ".tmp"
+					src: ["bower_components/**/*.js", "scripts/vendor/{,*/}*.js"]
+
 				]
 
 			styles:
@@ -281,5 +289,5 @@ module.exports = (grunt) ->
 		grunt.task.run ["clean:server", "concurrent:server", "autoprefixer", "connect:livereload", "watch"]
 
 	grunt.registerTask "test", ["clean:server", "concurrent:test", "autoprefixer", "connect:test", "mocha"]
-	grunt.registerTask "build", ["clean:dist", "useminPrepare", "concurrent:dist", "autoprefixer", "requirejs", "concat", "cssmin", "uglify", "modernizr", "copy:dist", "rev", "usemin"]
+	grunt.registerTask "build", ["clean:dist", "concurrent:dist", "useminPrepare", "autoprefixer", "copy:dist", "requirejs", "concat", "cssmin", "uglify", "modernizr", "rev", "usemin"]
 	grunt.registerTask "default", ["jshint", "test", "build"]
